@@ -1,0 +1,8 @@
+.git
+node_modules
+dist
+coverages
+.env
+Dockerfile
+README.md
+ 
