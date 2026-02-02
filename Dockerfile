@@ -1,18 +1,18 @@
 # -------- build stage --------
-FROM node:18-alpine AS build
-WORKDIR /app
-# Copy only what npm needs
-COPY package.json package-lock.json ./
-# Faster, smaller, deterministic install
-RUN npm ci --no-audit --no-fund
-# Copy source after deps are installed
-COPY . .
+FROM public.ecr.aws/docker/library/node:18-alpine AS build
 
-# Build
+WORKDIR /app
+
+# Copy package files and install dependencies
+COPY package.json package-lock.json ./
+RUN npm ci --no-audit --no-fund
+
+# Copy source and build
+COPY . .
 RUN npm run build
 
 # -------- runtime stage --------
-FROM nginx:alpine
+FROM public.ecr.aws/nginx/nginx:alpine
 
 # Remove default nginx assets
 RUN rm -rf /usr/share/nginx/html/*
